@@ -10,6 +10,8 @@ public class DateTest {
 		int i = 0;
 		do {
 			System.out.println("Please enter a date: ");
+			System.out.println("Date format: mm/dd/yyyy or mm dd yyyy");
+			System.out.println("Example: March 27th 2020 or January 15 2020 or 03 15 2020");
 			String date = keyboard.nextLine();
 			newDate.accept(date);
 			i = newDate.checkValid(newDate);
