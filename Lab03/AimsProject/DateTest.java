@@ -13,8 +13,7 @@ public class DateTest {
 		System.out.println("Please enter a date: ");
 		do {
 			String date = keyboard.nextLine();
-			newDate.accept(date);
-			i = newDate.checkValid(newDate);
+			i = newDate.accept(date);
 			if (i != 1) {
 				System.out.println("Invalid date! Please try again!");
 			}
