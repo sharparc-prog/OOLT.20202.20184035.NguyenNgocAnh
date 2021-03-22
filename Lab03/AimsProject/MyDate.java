@@ -1,6 +1,4 @@
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Scanner;
 
 public class MyDate {
 	private int day;
@@ -11,11 +9,18 @@ public class MyDate {
 	public int getDay() {
 		return day;
 	}
-
+	
+	public int checkDay(int day) {
+		if (day <= 0 || day > 31) 
+			return -1;
+		return 1;
+	}
+	
 	public void setDay(int day) {
-		if (day >= 1 && day <= 31) {
+		int i = checkDay(day);
+		if (i == 1)
 			this.day = day;
-		} else {
+		else {
 			System.out.println("Invalid day! Set to current day!");
 			this.day = LocalDate.now().getDayOfMonth();
 		}
@@ -25,8 +30,15 @@ public class MyDate {
 		return month;
 	}
 
+	public int checkMonth(int month) {
+		if (month <= 0 || month >= 12) 
+			return -1;
+		return 1;
+	}
+	
 	public void setMonth(int month) {
-		if (month >= 1 && month <= 12) {
+		int i = checkMonth(month);
+		if (i == 1) {
 			this.month = month;
 		} else {
 			System.out.println("Invalid month! Set to current month!");
@@ -37,9 +49,16 @@ public class MyDate {
 	public int getYear() {
 		return year;
 	}
-
+	
+	public int checkYear(int year) {
+		if (year <= 0) 
+			return -1;
+		return 1;
+	}
+	
 	public void setYear(int year) {
-		if (year >= 0) {
+		int i = checkYear(year);
+		if (i == 1) {
 			this.year = year;
 		} else {
 			System.out.println("Invalid year! Set to current year!");			
@@ -55,20 +74,26 @@ public class MyDate {
 	}
 
 	public MyDate(int day, int month, int year) {
-		if (day >= 1 && day <= 31 || month >= 1 && month <= 12 || year >= 0) {
-			setMonth(month);
+		int i = checkDay(day);
+		if (i == 1)
 			setDay(day);
+		i = checkMonth(month);
+		if (i == 1)
+			setMonth(month);
+		i = checkYear(year);
+		if (i == 1)
 			setYear(year);
-		} else {
-			if (day <= 1 && day >= 31) {
-				System.out.print("Invalid day! ");
-			}
-			if (month <= 1 && month >= 12) {
-				System.out.print("Invalid month! ");
-			}
-			if (year <= 0) {
-				System.out.println("Invalid year!");
-			}
+		
+		MyDate temp = new MyDate();
+		temp.day = day;
+		temp.month = month;
+		temp.year = year;
+		i = checkValid(temp);	// Check if date is valid
+		if (i == -1) {
+			System.out.println("The date is not valid! Set to current date!");
+			setDay(LocalDate.now().getDayOfMonth());
+	        setMonth(LocalDate.now().getMonthValue());
+	        setYear(LocalDate.now().getYear());
 		}
 	}
 	
@@ -78,7 +103,7 @@ public class MyDate {
 		this.stringDate = date;
 	}
 	
-	private void setDateByString(String input) {
+	private int setDateByString(String input) {
 		if (input.contains(" ")) {
 			input = input.replaceAll(" ", "/");
 		}
@@ -94,6 +119,10 @@ public class MyDate {
 		String strMon = split[0];
 		String strDay = split[1];
 		String strYea = split[2];
+		
+		if (strMon == null || strDay == null || strYea == null) {
+			return -1;		// return -1 if input data is invalid
+		}
 		
 		setDay(Integer.parseInt(strDay));
 		setYear(Integer.parseInt(strYea));
@@ -135,23 +164,37 @@ public class MyDate {
 		case "12": case "december": case "dec.": case "dec":
 			setMonth(12);
 			break;
+		default:
+			System.out.println("Invalid month! Set to current month!");
 		}
 		
+		MyDate temp = new MyDate();
+		temp.day = Integer.parseInt(strDay);
+		temp.month = this.month;
+		temp.year = Integer.parseInt(strYea);
+		int i = checkValid(temp);	// Check if date is valid
+		if (i == -1) {
+	        return 0;		// return 0 if input date by string successfully but the date isn't valid
+		}
+		return 1;	// return 1 if input date by string successfully
 		
 	}
 	
 	public int checkValid(MyDate date) {
-		int reValue = 1;
-		if (date.month == 2 && date.day > 29) {
-			reValue = -1;
+		if (date.month == 2) {		// Case month = 2
+			if (date.year % 4 == 0)
+				if (date.day > 29) 
+					return -1;
+			if (date.year % 4 != 0)
+				if (date.day > 28)
+					return -1;
+			
+		} else if (date.month == 4 || date.month == 6 || date.month == 9 || date.month == 11) {	// 30day-month
+			if (date.day > 30) {
+				return -1;
+			}
 		}
-		if (date.month == 2 && date.day > 28 && date.year % 4 != 0) {
-			reValue = -1;
-		}
-		if (date.month == 4 || date.month == 6 || date.month == 9 || date.month == 11 && date.day == 31) {
-			reValue = -1;
-		}
-		return reValue;
+		return 1;
 	}
 	
 	public void accept(String date) {
