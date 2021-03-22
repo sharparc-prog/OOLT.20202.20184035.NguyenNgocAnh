@@ -165,9 +165,10 @@ public class MyDate {
 			setMonth(12);
 			break;
 		default:
-			System.out.println("Invalid month! Set to current month!");
+			System.out.println("Invalid month!");
+			return -1;
 		}
-		
+			
 		MyDate temp = new MyDate();
 		temp.day = Integer.parseInt(strDay);
 		temp.month = this.month;
@@ -180,7 +181,7 @@ public class MyDate {
 		
 	}
 	
-	public int checkValid(MyDate date) {
+	public int checkValid(MyDate date) {	// -1 for invalid date and 1 for valid date
 		if (date.month == 2) {		// Case month = 2
 			if (date.year % 4 == 0)
 				if (date.day > 29) 
@@ -189,7 +190,7 @@ public class MyDate {
 				if (date.day > 28)
 					return -1;
 			
-		} else if (date.month == 4 || date.month == 6 || date.month == 9 || date.month == 11) {	// 30day-month
+		} else if (date.month == 4 || date.month == 6 || date.month == 9 || date.month == 11) {	// 30day-month: 4, 6, 9, 11
 			if (date.day > 30) {
 				return -1;
 			}
@@ -197,9 +198,10 @@ public class MyDate {
 		return 1;
 	}
 	
-	public void accept(String date) {
+	public int accept(String date) {
 		this.stringDate = date;
-		setDateByString(stringDate);
+		int i = setDateByString(stringDate);
+		return i;
 	}
 	
 	public void print(MyDate date) {
