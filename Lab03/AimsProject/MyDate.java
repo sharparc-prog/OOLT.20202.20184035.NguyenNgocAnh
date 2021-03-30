@@ -5,6 +5,32 @@ public class MyDate {
 	private int month;
 	private int year;
 	private String stringDate;
+	private String[] datePart = {null, null, null};
+	private static final String[] monthArr = {
+			"",
+			"January",
+	        "February",
+	        "March",
+	        "April",
+	        "May",
+	        "June",
+	        "July",
+	        "August",
+	        "September",
+	        "October",
+	        "November",
+	        "December"
+		};
+	private static final String[] numberArr = {
+			"oh", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",	// 10
+			"eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen",	// 19
+			"twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred"  // end 28
+			};
+	private static final String[] ordinalArr = {
+			null, "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",	// 10
+			"eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", 	// 17
+			"eighteenth", "nineteenth", "twentieth", "thirtieth"	// 18-19-20-21
+			};
 	
 	public int getDay() {
 		return day;
@@ -29,9 +55,13 @@ public class MyDate {
 	public int getMonth() {
 		return month;
 	}
-
+	
+	public String getstrMonth(int i) {
+		return monthArr[i];
+	}
+	
 	public int checkMonth(int month) {
-		if (month <= 0 || month >= 12) 
+		if (month <= 0 || month > 12) 
 			return -1;
 		return 1;
 	}
@@ -65,12 +95,19 @@ public class MyDate {
 			this.year = LocalDate.now().getYear();
 		}
 	}
-
+	
+	// Constructor
 	public MyDate(){
 		super();
         setDay(LocalDate.now().getDayOfMonth());
         setMonth(LocalDate.now().getMonthValue());
         setYear(LocalDate.now().getYear());
+	}
+	
+	public MyDate(String date) {
+		// Format:  month day year OR month/day/year
+		// Example: March 27th 2000 or 03 27 2000 or 03/27/2000
+		this.stringDate = date;
 	}
 
 	public MyDate(int day, int month, int year) {
@@ -97,11 +134,16 @@ public class MyDate {
 		}
 	}
 	
-	public MyDate(String date) {
-		// Format:  month day year OR month/day/year
-		// Example: March 27th 2000 or 03 27 2000 or 03/27/2000
-		this.stringDate = date;
-	}
+		public MyDate(String day, String month, String year) {
+			datePart[0] = day;
+			datePart[1] = month;
+			datePart[2] = year;
+			setDay(parseDay(datePart[0]));
+			setMonth(parseMonth(datePart[1]));
+			setYear(parseYear(datePart[2]));
+		}
+		
+	// End of constructor
 	
 	private int setDateByString(String input) {
 		if (input.contains(" ")) {
@@ -113,7 +155,7 @@ public class MyDate {
 		input = input.replaceAll("1st", "1");
 		
 //		System.out.println(input);
-		String[] split = input.split("/", 3);	
+		String[] split = input.split("/");	
 		
 //		System.out.println(Arrays.toString(split));
 		String strMon = split[0];
@@ -204,7 +246,132 @@ public class MyDate {
 		return i;
 	}
 	
-	public void print(MyDate date) {
-		System.out.println("MyDate: " + month + "/" + day + "/" + year);
+	private String addSuffix(int day) {
+		switch(day) {
+		case 1:
+		case 21:
+		case 31:
+			return String.valueOf(day) + "st";
+		case 2:
+		case 22:
+			return String.valueOf(day) + "nd";
+		case 3:
+		case 23:
+			return String.valueOf(day) + "rd";
+		default:
+			return String.valueOf(day) + "th";
+		}
+	}
+	
+	private int parseDay(String day) {
+		day = day.toLowerCase();
+		int returnDay = 0;
+		String[] split = day.split("-");
+		if (split.length == 1) {
+			for (int i = 1; i < 21; i++) {
+				if (split[0].equals(ordinalArr[i]))
+					returnDay += i;
+				else if (split[0].equals(ordinalArr[21]))
+					return 30;
+			}
+		}
+		if (split.length != 1) {
+			if (split[0].equals(numberArr[20]))
+				returnDay += 20;
+			if (split[0].equals(numberArr[21])) {
+				returnDay += 31;
+				return returnDay;
+			}	
+			for (int i = 1; i < 10; i++) {
+				if (split[1].equals(ordinalArr[i]))
+					returnDay += i;
+			}
+		}
+		return returnDay;
+	}
+	
+	private int parseMonth(String month) {
+		int i;
+		for (i = 1; i <= 12; i++) {
+			if (month.equals(monthArr[i]))
+				return i;
+		}
+		return i;	
+	}
+	
+	private int parseYear(String year) {		// Only accept year from 1000 to 9999
+		year = year.toLowerCase();
+		String[] yearPart = year.split(" ");
+		int i, intYear = 0;
+		String[] part1 = yearPart[0].split("-");
+		String[] part2 = yearPart[1].split("-");
+		if (part1.length == 1) {
+			for (i = 10; i < 20; i++) {
+				if (part1[0].equals(numberArr[i]))
+					intYear += i * 100;
+			}
+			for (i = 20; i < 29; i++) {
+				if (part1[0].equals(numberArr[i]))
+					intYear += 100 * (20 + 10 * (i - 20));
+			}
+		}
+		if (part1.length == 2) {
+			for (i = 20; i < 29; i++) {
+				if (part1[0].equals(numberArr[i]))
+					intYear += 100 * (20 + 10 * (i - 20));
+			}
+			for (i = 1; i < 11; i++) {
+				if (part1[1].equals(numberArr[i]))
+					intYear += i * 100;
+			}
+		}
+		if (part2.length == 1) {
+			for (i = 10; i < 20; i++) {
+				if (part2[0].equals(numberArr[i]))
+					intYear += i;
+			}
+			for (i = 20; i < 29; i++) {
+				if (part2[0].equals(numberArr[i]))
+					intYear += 20 + 10 * (i - 20);
+			}
+		}
+		if (part2.length == 2) {
+			for (i = 20; i < 29; i++) {
+				if (part2[0].equals(numberArr[i]))
+					intYear += 20 + 10 * (i - 20);
+			}
+			for (i = 1; i < 11; i++) {
+				if (part2[1].equals(numberArr[i]))
+					intYear += i;
+			}
+		}
+		return intYear;
+	}
+	
+	public void print() {
+		System.out.println(monthArr[month] + " " + addSuffix(day) + " " + year);
+	}
+	
+	public void printFormat(int i) {
+		switch (i) {
+		case 1:
+			System.out.println(year + "-" + month + "-" + day);
+			break;
+		case 2:
+			System.out.println(day + "/" + month + "/" + year);
+			break;
+		case 3:
+			System.out.printf("%d-%.3s-%d", day, getstrMonth(month), year);
+			break;
+		case 4:
+			System.out.printf("%.3s %d %d", getstrMonth(month), day, year);
+			break;
+		case 5:
+			System.out.println(month + "-" + day + "-" + year);
+			break;
+		default:
+			System.out.println("Invalid format " + i);
+		}
+	
 	}
 }
