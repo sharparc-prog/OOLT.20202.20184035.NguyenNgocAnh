@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class DateTest {
+public class DateTest extends DateUtils {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -25,9 +25,9 @@ public class DateTest {
 		
 		
 		System.out.println("---------------------------Lab04----------------------------");
-		MyDate anotherDate = new MyDate("thirtieth", "March", "twenty twenty-one");
+		MyDate Date1 = new MyDate("thirtieth", "March", "twenty twenty-one");
 		System.out.print("Date 1: ");
-		anotherDate.print();
+		Date1.print();
 		System.out.println("-------------------------------------------------------");
 		
 		System.out.println("Enter Date 2\nEnter day in string (Example: twenty-second): ");
@@ -36,10 +36,25 @@ public class DateTest {
 		String month = keyboard.nextLine();
 		System.out.println("Enter year in string (Example: twenty-three forty-five): ");
 		String year = keyboard.nextLine();
-		MyDate anotherDate1 = new MyDate(day, month, year);
-		anotherDate1.print();
+		MyDate Date2 = new MyDate(day, month, year);
+		Date2.print();
+		MyDate Date3 = new MyDate("thirtieth", "March", "twenty twenty-two");
+		MyDate Date4 = new MyDate("twenty-seventh", "June", "twenty twenty-one");
 	
-		System.out.println("Date 1 " + DateUtil(anotherDate, anotherDate1) + " Date 2");
+		i = dateCmp(Date1, Date2);
+		switch (i) {
+		case 1:
+			System.out.println("Date1 > Date2");
+			break;
+		case -1:
+			System.out.println("Date1 < Date2");
+			break;
+		case 0:
+			System.out.println("Date1 = Date2");
+		}
+		
+		
+		
 		System.out.println("-------------------------------------------------------");
 		System.out.println("Format\t\t|\tExample\n_____________________________________\nyyyy-mm-dd\t|\t1930-02-03\nd/m/yyyy\t|\t3/2/1930\ndd-mmm-yyyy"
 				+ "\t|\t03-Feb-1930\nmmm d yyyy\t|\tFeb 3 1930\nmm-dd-yyyy\t|\t02-03-1930\n"
@@ -47,24 +62,22 @@ public class DateTest {
 		System.out.print("Please select corresponding format (1 to 5): ");
 		i = keyboard.nextInt();
 		System.out.println("You've entered date: ");
-		anotherDate1.printFormat(i);
+		Date2.printFormat(i);
+		
+		System.out.println("\n-------------------------------------------------------");
+		System.out.println("Before sort:");
+		MyDate[] listDate = {Date1, Date2, Date3, Date4};
+		for (i = 0; i < listDate.length; i++) {
+			listDate[i].print();
+		}
+		System.out.println("---------------");
+		System.out.println("After sort:");
+		listDate = dateSort(listDate);
+		for (i = 0; i < listDate.length; i++) {
+			listDate[i].print();
+		}
 		
 		keyboard.close();
 	}
-	
-	public static String DateUtil(MyDate date1, MyDate date2) {	
-		if (date1.getYear() > date2.getYear())					
-			return ">";
-		else if (date1.getYear() < date2.getYear())
-			return "<";
-		if (date1.getMonth() > date2.getMonth())
-			return ">";
-		else if (date1.getMonth() < date2.getMonth())
-			return "<";
-		if (date1.getDay() > date2.getDay())
-			return ">";
-		else if (date1.getDay() < date2.getDay())
-			return "<";
-		return "=";
-	}
+
 }
