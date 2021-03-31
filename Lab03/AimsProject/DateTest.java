@@ -65,13 +65,13 @@ public class DateTest extends DateUtils {
 		Date2.printFormat(i);
 		
 		System.out.println("\n-------------------------------------------------------");
-		System.out.println("Before sort:");
+		System.out.println("BEFORE SORT:");
 		MyDate[] listDate = {Date1, Date2, Date3, Date4};
 		for (i = 0; i < listDate.length; i++) {
 			listDate[i].print();
 		}
 		System.out.println("---------------");
-		System.out.println("After sort:");
+		System.out.println("AFTER SORT:");
 		listDate = dateSort(listDate);
 		for (i = 0; i < listDate.length; i++) {
 			listDate[i].print();
