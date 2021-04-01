@@ -1,6 +1,6 @@
 package soict.hedspi.test.disc;
 
-import soict.hedspi.aims.disc.DigitalVideoDisc;
+import soict.hedspi.aims.media.DigitalVideoDisc;
 
 public class TestPassingParameter {
 
