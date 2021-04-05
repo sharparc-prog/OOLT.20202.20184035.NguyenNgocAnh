@@ -9,18 +9,16 @@ public class Aims {
 	private static Scanner sc = new Scanner(System.in);
 	private static List<Order> orderList = new ArrayList<Order>();
 	private static List<Media> mediaList = new ArrayList<Media>();
-	private static Order selectOrder = Order.addOrder();
 	private static Order orderBuffer = Order.addOrder();
 	
 	private static void pressEnterToContinue() { 
-	        System.out.println("Press Enter key to continue...");
-	        try
-	        {
-	            System.in.read();
-	        }  
-	        catch(Exception e)
-	        {}  
-	 }
+		System.out.println("Press Enter key to continue...");
+		try {
+			System.in.read();
+		}  
+		catch(Exception e) {
+		}  
+	}
 	
 	private static void printMediaList() {
 		if (mediaList.size() != 0) {
@@ -68,7 +66,7 @@ public class Aims {
 	
 	private static void menu1() {
 		if (orderList.size() < Order.MAX_LIMITED_ORDERS) {
-			orderList.add(selectOrder);
+			orderList.add(orderBuffer);
 			System.out.println("->Success!");
 		}
 		else
