@@ -1,5 +1,5 @@
 package soict.hedspi.aims;
-import soict.hedspi.aims.disc.DigitalVideoDisc;
+import soict.hedspi.aims.media.DigitalVideoDisc;
 import soict.hedspi.aims.order.*;
 
 public class Aims {
