@@ -9,8 +9,12 @@ public class Aims {
 	private static Scanner sc = new Scanner(System.in);
 	private static List<Order> orderList = new ArrayList<Order>();
 	private static List<Media> mediaList = new ArrayList<Media>();
-	private static Order orderBuffer = Order.addOrder();
+	private static Order orderBuffer = null;
+	private static Order orderInit = Order.addOrder();
 	
+	private static void clearBuffer() {
+		orderBuffer = null;
+	}
 	private static void pressEnterToContinue() { 
 		System.out.println("Press Enter key to continue...");
 		try {
@@ -66,7 +70,7 @@ public class Aims {
 	
 	private static void menu1() {
 		if (orderList.size() < Order.MAX_LIMITED_ORDERS) {
-			orderList.add(orderBuffer);
+			orderList.add(orderInit);
 			System.out.println("->Success!");
 		}
 		else
@@ -87,9 +91,9 @@ public class Aims {
 		}
 		System.out.println();
 		
-		orderBuffer = null;
+		clearBuffer();
 		int orderid = sc.nextInt();
-		orderBuffer = orderList.get(orderid - 1);
+		orderBuffer = orderList.get(orderid - 1);	// Temp
 		
 		int mediaid = 0;
 		while (true) {
@@ -107,9 +111,12 @@ public class Aims {
 				mediaid = sc.nextInt();
 				orderBuffer.addMedia(mediaList.get(mediaid - 1));
 				System.out.println("'" + mediaList.get(mediaid - 1).getTitle() + "'" + " added!");
+				orderList.set(orderid - 1, orderBuffer);
+				clearBuffer();
 				break;
 			case 2:
 				orderList.set(orderid - 1, orderBuffer);
+				clearBuffer();
 				return;
 			default:
 				throw new IllegalArgumentException("Invalid value: " + mediaid);
@@ -123,7 +130,7 @@ public class Aims {
 			pressEnterToContinue();
 			return;
 		}
-		orderBuffer = null;
+		clearBuffer();
 		System.out.print("Select order id: ");
 		for (int i = 0; i < orderList.size(); i++) {
 			System.out.print((i + 1) + " ");
@@ -146,13 +153,17 @@ public class Aims {
 				printMediaList();
 				System.out.println("Enter media id to remove: ");
 				mediaid = sc.nextInt();
-				if (orderBuffer.removeMedia(mediaList.get(mediaid - 1)))
+				if (orderBuffer.removeMedia(mediaList.get(mediaid - 1))) {
 					System.out.println("Removed '" + mediaList.get(mediaid - 1).getTitle() + "' from the order id: " + orderid);
+					orderList.set(orderid - 1, orderBuffer);
+					clearBuffer();
+				}
 				else
 					System.out.println("Item doesn't exist!");
 				break;
 			case 2:
 				orderList.set(orderid - 1, orderBuffer);
+				clearBuffer();
 				return;
 			default:
 				throw new IllegalArgumentException("Invalid value: " + mediaid);
@@ -174,7 +185,9 @@ public class Aims {
 		System.out.println();
 		int orderid = sc.nextInt();		
 		System.out.println("->Current items of order id: " + orderid);
-		orderList.get(orderid - 1).printOrder();
+		orderBuffer = orderList.get(orderid - 1);
+		orderBuffer.printOrder();
+		orderBuffer = null;
 		pressEnterToContinue();
 	}
 	
