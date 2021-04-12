@@ -5,16 +5,24 @@ import java.util.Scanner;
 import soict.hedspi.aims.order.Order;
 import soict.hedspi.aims.media.*;
 
-public class Aims {
+public class Aims extends Media {
 	private static Scanner sc = new Scanner(System.in);
 	private static List<Order> orderList = new ArrayList<Order>();
 	private static List<Media> mediaList = new ArrayList<Media>();
 	private static Order orderBuffer = null;
-	private static Order orderInit = Order.addOrder();
+	
+	private static final boolean initialize() {
+		while (orderList.size() + 1 < Order.MAX_LIMITED_ORDERS) {
+			orderList.add(Order.addOrder());
+			return true;
+		}
+		return false;
+	}
 	
 	private static void clearBuffer() {
 		orderBuffer = null;
 	}
+	
 	private static void pressEnterToContinue() { 
 		System.out.println("Press Enter key to continue...");
 		try {
@@ -43,7 +51,12 @@ public class Aims {
 			System.out.println("||0. Exit\t\t\t\t||");
 			System.out.println("||======================================||");
 			System.out.println("||Please choose a number: 0-1-2-3-4\t||");
-			int choice = sc.nextInt();
+			int choice = 0;
+			try {
+				choice = sc.nextInt();
+			} catch (Exception e) {
+				System.out.println("Invalid selection! Program will exit!");
+			}
 			switch (choice) {
 			case 1:
 				menu1();
@@ -68,9 +81,8 @@ public class Aims {
 		}
 	}
 	
-	private static void menu1() {
-		if (orderList.size() < Order.MAX_LIMITED_ORDERS) {
-			orderList.add(orderInit);
+	private static final void menu1() {
+		if (initialize()) {
 			System.out.println("->Success!");
 		}
 		else
@@ -78,7 +90,7 @@ public class Aims {
 		pressEnterToContinue();
 	}
 	
-	private static void menu2() {
+	private static final void menu2() {
 		if (orderList.size() == 0) {
 			System.out.println("->Please create a order first!");
 			pressEnterToContinue();
@@ -112,11 +124,9 @@ public class Aims {
 				orderBuffer.addMedia(mediaList.get(mediaid - 1));
 				System.out.println("'" + mediaList.get(mediaid - 1).getTitle() + "'" + " added!");
 				orderList.set(orderid - 1, orderBuffer);
-				clearBuffer();
 				break;
 			case 2:
 				orderList.set(orderid - 1, orderBuffer);
-				clearBuffer();
 				return;
 			default:
 				throw new IllegalArgumentException("Invalid value: " + mediaid);
@@ -124,7 +134,7 @@ public class Aims {
 		}
 	}
 	
-	private static void menu3() {
+	private static final void menu3() {
 		if (orderList.size() == 0) {
 			System.out.println("->Please create a order first!");
 			pressEnterToContinue();
@@ -156,14 +166,12 @@ public class Aims {
 				if (orderBuffer.removeMedia(mediaList.get(mediaid - 1))) {
 					System.out.println("Removed '" + mediaList.get(mediaid - 1).getTitle() + "' from the order id: " + orderid);
 					orderList.set(orderid - 1, orderBuffer);
-					clearBuffer();
 				}
 				else
 					System.out.println("Item doesn't exist!");
 				break;
 			case 2:
 				orderList.set(orderid - 1, orderBuffer);
-				clearBuffer();
 				return;
 			default:
 				throw new IllegalArgumentException("Invalid value: " + mediaid);
@@ -172,7 +180,7 @@ public class Aims {
 		
 	}
 	
-	private static void menu4() {
+	private static final void menu4() {
 		if (orderList.size() == 0) {
 			System.out.println("->Please create a order first!");
 			pressEnterToContinue();
@@ -185,9 +193,7 @@ public class Aims {
 		System.out.println();
 		int orderid = sc.nextInt();		
 		System.out.println("->Current items of order id: " + orderid);
-		orderBuffer = orderList.get(orderid - 1);
-		orderBuffer.printOrder();
-		orderBuffer = null;
+		orderList.get(orderid - 1).printOrder();;
 		pressEnterToContinue();
 	}
 	
@@ -210,58 +216,6 @@ public class Aims {
 	}
 
 }
-
-//		// TODO Auto-generated method stub
-//		Order anOrder = Order.addOrder();
-//		// Create a new dvd object and set the fields
-//		Media dvd1 = new Media("The Lion King");
-//		dvd1.setCategory("Animation");
-//		dvd1.setCost(19.95f);
-//		dvd1.setDirector("Roger Allers");
-//		dvd1.setLength(87);
-//		
-//		// Add the dvd to the order
-//		anOrder.addMedia(dvd1);
-//		
-//		// Add another dvd
-//		Media dvd2 = new Media("Star Wars");
-//		dvd2.setCategory("Science Fiction");
-//		dvd2.setCost(24.95f);
-//		dvd2.setDirector("George Lucas");
-//		dvd2.setLength(124);
-//		// Add to order
-//		anOrder.addMedia(dvd2);
-//		
-//		// Add another dvd
-//		Media dvd3 = new Media("Alladin");
-//		dvd3.setCategory("Animation");
-//		dvd3.setCost(18.99f);
-//		dvd3.setDirector("John Musker");
-//		dvd3.setLength(90);
-//		// Add to order
-//		anOrder.addMedia(dvd3);
-//		anOrder.removeMedia(dvd3);
-//		int i = anOrder.removeMedia(dvd3);
-//		assert (i == 0 || i == 1 || i == -1) : "Failed!"; 
-//		i = anOrder.removeMedia(dvd3);
-//		assert (i == 0 || i == 1 || i == -1) : "Failed!"; 
-//		anOrder.addMedia(dvd3);
-//		anOrder.addMedia(dvd3);
-//		
-//		anOrder.printOrder();
-//		System.out.print("Total cost is: ");
-//		System.out.println(anOrder.totalCost());
-//		
-//		Order anOrder2 = Order.addOrder();
-//		anOrder2.addMedia(dvd3);
-//		anOrder2.printOrder();
-//		Order anOrder3 = Order.addOrder();
-//		anOrder3.addMedia(dvd3);
-//		Order anOrder4 = Order.addOrder();
-//		anOrder4.addMedia(dvd3);
-//		Order anOrder5 = Order.addOrder();
-//		anOrder5.addMedia(dvd3);
-//		System.out.println("------------------------------------------");
 		
 		
 
